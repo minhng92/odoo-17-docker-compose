@@ -1,0 +1,8 @@
+# -----------------------
+# | Add Python packages |
+# -----------------------
+# To install below packages at startup, uncomment this line in "docker-compose.yml" file!
+# - ./entrypoint.sh:/entrypoint.sh
+# then down the docker container ($ docker-compose down) and up it again ($ docker-compose up -d).
+# -----------------------
+# paramiko==2.7.2 # for auto_backup module
