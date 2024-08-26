@@ -37,6 +37,6 @@ else
 fi
 
 # run Odoo
-docker-compose -f $DESTINATION/docker-compose.yml up -d
+docker compose -f $DESTINATION/docker-compose.yml up -d
 
 echo 'Started Odoo @ http://localhost:'$PORT' | Master Password: minhng.info | Live chat port: '$CHAT
