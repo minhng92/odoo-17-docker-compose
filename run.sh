@@ -3,19 +3,22 @@ DESTINATION=$1
 PORT=$2
 CHAT=$3
 
-# clone Odoo directory
+# Clone Odoo directory
 git clone --depth=1 https://github.com/minhng92/odoo-17-docker-compose $DESTINATION
 rm -rf $DESTINATION/.git
 
-# set permission
+# Create PostgreSQL directory
 mkdir -p $DESTINATION/postgresql
-sudo chmod -R 777 $DESTINATION
+
+# Change ownership to current user and set restrictive permissions for security
+sudo chown -R $USER:$USER $DESTINATION
+sudo chmod -R 700 $DESTINATION  # Only the user has access
 
 # Check if running on macOS
 if [[ "$OSTYPE" == "darwin"* ]]; then
   echo "Running on macOS. Skipping inotify configuration."
 else
-  # config for Linux
+  # System configuration
   if grep -qF "fs.inotify.max_user_watches" /etc/sysctl.conf; then
     echo $(grep -F "fs.inotify.max_user_watches" /etc/sysctl.conf)
   else
@@ -24,7 +27,7 @@ else
   sudo sysctl -p
 fi
 
-
+# Set ports in docker-compose.yml
 # Update docker-compose configuration
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # macOS sed syntax
@@ -36,7 +39,11 @@ else
   sed -i 's/20017/'$CHAT'/g' $DESTINATION/docker-compose.yml
 fi
 
-# run Odoo
+# Set file and directory permissions after installation
+find $DESTINATION -type f -exec chmod 644 {} \;
+find $DESTINATION -type d -exec chmod 755 {} \;
+
+# Run Odoo
 docker-compose -f $DESTINATION/docker-compose.yml up -d
 
-echo 'Started Odoo @ http://localhost:'$PORT' | Master Password: minhng.info | Live chat port: '$CHAT
+echo "Odoo started at http://localhost:$PORT | Master Password: minhng.info | Live chat port: $CHAT"
