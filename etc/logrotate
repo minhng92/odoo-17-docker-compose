@@ -1,0 +1,8 @@
+/etc/odoo/*.log {
+  rotate 3
+  daily
+  nocompress
+  missingok
+  notifempty
+  copytruncate
+}

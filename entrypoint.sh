@@ -15,6 +15,17 @@ pip3 install -r /etc/odoo/requirements.txt
 
 # sed -i 's|raise werkzeug.exceptions.BadRequest(msg)|self.jsonrequest = {}|g' /usr/lib/python3/dist-packages/odoo/http.py
 
+# Install logrotate if not already installed
+if ! dpkg -l | grep -q logrotate; then
+    apt-get update && apt-get install -y logrotate
+fi
+
+# Copy logrotate config
+cp /etc/odoo/logrotate /etc/logrotate.d/odoo
+
+# Start cron daemon (required for logrotate)
+cron
+
 DB_ARGS=()
 function check_config() {
     param="$1"
